@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6C14E813-80A3-406F-A582-6C10881B9E39}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>NHibernate.Lob</RootNamespace>
+    <AssemblyName>NHibernate.Lob</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\NHibernate.Lob.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NHibernate, Version=0.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="External\AbstractExternalBlobConnection.cs" />
+    <Compile Include="External\Impl\CasStream.cs" />
+    <Compile Include="External\AbstractExternalBlobConnectionProvider.cs" />
+    <Compile Include="External\Type\AbstractExternalType.cs" />
+    <Compile Include="External\Type\ExternalXlobType.cs" />
+    <Compile Include="External\Type\GZippedExternalClobType.cs" />
+    <Compile Include="External\Type\GZippedExternalXlobType.cs" />
+    <Compile Include="External\Utils.cs" />
+    <Compile Include="Type\BlobType.cs" />
+    <Compile Include="Type\ClobType.cs" />
+    <Compile Include="External\Type\ExternalBlobType.cs" />
+    <Compile Include="External\ExternalBlobDbCommandProxy.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="External\ExternalBlobDbConnectionProxy.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="External\ExternalBlobDriverProxy.cs" />
+    <Compile Include="External\DriverConnectionProvider.cs" />
+    <Compile Include="External\FileSystemCasConnection.cs" />
+    <Compile Include="External\FileSystemCasConnectionProvider.cs" />
+    <Compile Include="External\IExternalBlobConnection.cs" />
+    <Compile Include="External\IExternalBlobConnectionProvider.cs" />
+    <Compile Include="External\Type\ExternalClobType.cs" />
+    <Compile Include="Type\GZippedBlobType.cs" />
+    <Compile Include="Type\GZippedClobType.cs" />
+    <Compile Include="Type\GZippedXlobType.cs" />
+    <Compile Include="External\Type\GZippedExternalBlobType.cs" />
+    <Compile Include="Type\XlobType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Calyptus.Lob\Calyptus.Lob.csproj">
+      <Project>{548E083F-F742-41B7-8971-6004E85907AA}</Project>
+      <Name>Calyptus.Lob</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

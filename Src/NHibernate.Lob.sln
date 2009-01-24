@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Lob", "NHibernate.Lob\NHibernate.Lob.csproj", "{6C14E813-80A3-406F-A582-6C10881B9E39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Lob.Tests", "NHibernate.Lob.Tests\NHibernate.Lob.Tests.csproj", "{05AFD024-A06F-4D6D-9BE2-18E34D4B92CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Lob.Oracle", "NHibernate.Lob.Oracle\NHibernate.Lob.Oracle.csproj", "{B2478CCF-B176-49AE-BAA0-646C39D8D20C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Lob.SqlServer", "NHibernate.Lob.SqlServer\NHibernate.Lob.SqlServer.csproj", "{6E32CABB-5EE9-4344-BA06-BB7BC57C012A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calyptus.Lob", "Calyptus.Lob\Calyptus.Lob.csproj", "{548E083F-F742-41B7-8971-6004E85907AA}"
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = NHibernate.Lob.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C14E813-80A3-406F-A582-6C10881B9E39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C14E813-80A3-406F-A582-6C10881B9E39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C14E813-80A3-406F-A582-6C10881B9E39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C14E813-80A3-406F-A582-6C10881B9E39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05AFD024-A06F-4D6D-9BE2-18E34D4B92CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05AFD024-A06F-4D6D-9BE2-18E34D4B92CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05AFD024-A06F-4D6D-9BE2-18E34D4B92CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05AFD024-A06F-4D6D-9BE2-18E34D4B92CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2478CCF-B176-49AE-BAA0-646C39D8D20C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2478CCF-B176-49AE-BAA0-646C39D8D20C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2478CCF-B176-49AE-BAA0-646C39D8D20C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2478CCF-B176-49AE-BAA0-646C39D8D20C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E32CABB-5EE9-4344-BA06-BB7BC57C012A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E32CABB-5EE9-4344-BA06-BB7BC57C012A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E32CABB-5EE9-4344-BA06-BB7BC57C012A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E32CABB-5EE9-4344-BA06-BB7BC57C012A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{548E083F-F742-41B7-8971-6004E85907AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{548E083F-F742-41B7-8971-6004E85907AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{548E083F-F742-41B7-8971-6004E85907AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{548E083F-F742-41B7-8971-6004E85907AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
