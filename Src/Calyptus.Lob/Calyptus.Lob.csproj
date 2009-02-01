@@ -8,8 +8,8 @@
     <ProjectGuid>{548E083F-F742-41B7-8971-6004E85907AA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Calyptus.Lobs</RootNamespace>
-    <AssemblyName>Calyptus.Lobs</AssemblyName>
+    <RootNamespace>Calyptus.Lob</RootNamespace>
+    <AssemblyName>Calyptus.Lob</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
