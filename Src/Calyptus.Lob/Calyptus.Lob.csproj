@@ -34,14 +34,30 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Blob.cs" />
     <Compile Include="Clob.cs" />
+    <Compile Include="ArrayBlob.cs" />
+    <Compile Include="FileXlob.cs" />
+    <Compile Include="FileClob.cs" />
+    <Compile Include="WebXlob.cs" />
+    <Compile Include="WebClob.cs" />
+    <Compile Include="EmptyXlob.cs" />
+    <Compile Include="EmptyClob.cs" />
+    <Compile Include="EmptyBlob.cs" />
+    <Compile Include="FileBlob.cs" />
+    <Compile Include="StringXlob.cs" />
+    <Compile Include="WebBlob.cs" />
+    <Compile Include="XmlNodeXlob.cs" />
+    <Compile Include="XmlReaderXlob.cs" />
+    <Compile Include="TextReaderClob.cs" />
+    <Compile Include="StringClob.cs" />
+    <Compile Include="StreamBlob.cs" />
     <Compile Include="Xlob.cs" />
+    <Compile Include="XmlSerializableObjectXlob.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
