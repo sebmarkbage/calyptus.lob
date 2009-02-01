@@ -68,7 +68,7 @@ namespace NHibernate.Lob.External
 			}
 		}
 
-		public IExternalBlobConnection GetConnection()
+		public override IExternalBlobConnection GetConnection()
 		{
 			return new FileSystemCasConnection(_path, _hash);
 		}

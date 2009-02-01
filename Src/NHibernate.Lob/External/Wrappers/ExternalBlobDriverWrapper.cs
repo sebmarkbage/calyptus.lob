@@ -4,11 +4,11 @@ using System.Data.Common;
 
 namespace NHibernate.Lob.External
 {
-	public class ExternalBlobDriverProxy : IDriver
+	public class ExternalBlobDriverWrapper : IDriver
 	{
 		IDriver _base;
 
-		public ExternalBlobDriverProxy(IDriver driver)
+		public ExternalBlobDriverWrapper(IDriver driver)
 		{
 			_base = driver;
 		}
@@ -25,7 +25,7 @@ namespace NHibernate.Lob.External
 
 		public System.Data.IDbCommand GenerateCommand(System.Data.CommandType type, global::NHibernate.SqlCommand.SqlString sqlString, global::NHibernate.SqlTypes.SqlType[] parameterTypes)
 		{
-			return new ExternalBlobDbCommandProxy(null, (DbCommand) _base.GenerateCommand(type, sqlString, parameterTypes));
+			return new ExternalBlobDbCommandWrapper(null, (DbCommand) _base.GenerateCommand(type, sqlString, parameterTypes));
 		}
 
 		public void PrepareCommand(System.Data.IDbCommand command)
@@ -41,6 +41,11 @@ namespace NHibernate.Lob.External
 		public bool SupportsMultipleQueries
 		{
 			get { return _base.SupportsMultipleQueries; }
+		}
+
+		public string MultipleQueriesSeparator
+		{
+			get { return _base.MultipleQueriesSeparator; }
 		}
 	}
 }

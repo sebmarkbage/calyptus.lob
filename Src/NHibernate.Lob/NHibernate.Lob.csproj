@@ -32,55 +32,64 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Calyptus.Lob, Version=1.0.0.23963, Culture=neutral, PublicKeyToken=8d567450aca6da49, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Calyptus.Lob\bin\Release\Calyptus.Lob.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate, Version=0.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractLobType.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="CompressedBlob.cs" />
+    <Compile Include="Compression\GZipCompressor.cs" />
+    <Compile Include="Compression\IStreamCompressor.cs" />
+    <Compile Include="Compression\IXmlCompressor.cs" />
+    <Compile Include="Compression\XmlTextCompressor.cs" />
+    <Compile Include="CompressedClob.cs" />
+    <Compile Include="CompressedXlob.cs" />
     <Compile Include="External\AbstractExternalBlobConnection.cs" />
-    <Compile Include="External\Impl\CasStream.cs" />
+    <Compile Include="External\ExternalBlobs.cs" />
     <Compile Include="External\AbstractExternalBlobConnectionProvider.cs" />
-    <Compile Include="External\Type\AbstractExternalType.cs" />
+    <Compile Include="External\ExternalBlobWriter.cs" />
+    <Compile Include="External\Impl\ExternalBlob.cs" />
+    <Compile Include="External\Impl\ExternalClob.cs" />
+    <Compile Include="External\Impl\ExternalXlob.cs" />
+    <Compile Include="External\Type\AbstractExternalBlobType.cs" />
     <Compile Include="External\Type\ExternalXlobType.cs" />
-    <Compile Include="External\Type\GZippedExternalClobType.cs" />
-    <Compile Include="External\Type\GZippedExternalXlobType.cs" />
-    <Compile Include="External\Utils.cs" />
-    <Compile Include="Type\BlobType.cs" />
-    <Compile Include="Type\ClobType.cs" />
+    <Compile Include="BlobType.cs" />
+    <Compile Include="ClobType.cs" />
     <Compile Include="External\Type\ExternalBlobType.cs" />
-    <Compile Include="External\ExternalBlobDbCommandProxy.cs">
+    <Compile Include="External\Wrappers\ExternalBlobDbCommandWrapper.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="External\ExternalBlobDbConnectionProxy.cs">
+    <Compile Include="External\Wrappers\ExternalBlobDbConnectionWrapper.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="External\ExternalBlobDriverProxy.cs" />
+    <Compile Include="External\Wrappers\ExternalBlobDriverWrapper.cs" />
     <Compile Include="External\DriverConnectionProvider.cs" />
-    <Compile Include="External\FileSystemCasConnection.cs" />
-    <Compile Include="External\FileSystemCasConnectionProvider.cs" />
+    <Compile Include="External\FileSystem\FileSystemCasConnection.cs" />
+    <Compile Include="External\FileSystem\FileSystemCasConnectionProvider.cs" />
     <Compile Include="External\IExternalBlobConnection.cs" />
     <Compile Include="External\IExternalBlobConnectionProvider.cs" />
     <Compile Include="External\Type\ExternalClobType.cs" />
-    <Compile Include="Type\GZippedBlobType.cs" />
-    <Compile Include="Type\GZippedClobType.cs" />
-    <Compile Include="Type\GZippedXlobType.cs" />
-    <Compile Include="External\Type\GZippedExternalBlobType.cs" />
-    <Compile Include="Type\XlobType.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Calyptus.Lob\Calyptus.Lob.csproj">
-      <Project>{548E083F-F742-41B7-8971-6004E85907AA}</Project>
-      <Name>Calyptus.Lob</Name>
-    </ProjectReference>
+    <Compile Include="Oracle\BFileBlobType.cs" />
+    <Compile Include="Oracle\BFileClobType.cs" />
+    <Compile Include="Oracle\BFileXlobType.cs" />
+    <Compile Include="Parameters.cs" />
+    <Compile Include="SqlClient\FileStreamClobType.cs" />
+    <Compile Include="SqlClient\FileStreamXlobType.cs" />
+    <Compile Include="SqlClient\FileStreamBlobType.cs" />
+    <Compile Include="XlobType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

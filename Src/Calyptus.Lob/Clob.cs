@@ -7,6 +7,14 @@ namespace Calyptus.Lob
 	{
 		private const int BUFFERSIZE = 0x800;
 
+		public static Clob Empty
+		{
+			get
+			{
+				return new EmptyClob();
+			}
+		}
+
 		public static Clob Create(string filename, Encoding encoding)
 		{
 			return new FileClob(filename, encoding);

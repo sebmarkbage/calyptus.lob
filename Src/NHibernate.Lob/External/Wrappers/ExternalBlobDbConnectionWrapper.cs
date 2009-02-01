@@ -6,12 +6,12 @@ using System.Data.Common;
 
 namespace NHibernate.Lob.External
 {
-	public class ExternalBlobDbConnectionProxy : DbConnection, IExternalBlobConnection
+	public class ExternalBlobDbConnectionWrapper : DbConnection, IExternalBlobConnection
 	{
 		internal IDbConnection _db;
 		IExternalBlobConnection _cas;
 
-		public ExternalBlobDbConnectionProxy(IDbConnection db, IExternalBlobConnection cas)
+		public ExternalBlobDbConnectionWrapper(IDbConnection db, IExternalBlobConnection cas)
 		{
 			_db = db;
 			_cas = cas;
@@ -33,9 +33,9 @@ namespace NHibernate.Lob.External
 			_cas.Delete(fileReference);
 		}
 
-		Stream IExternalBlobConnection.Open(byte[] fileReference)
+		Stream IExternalBlobConnection.OpenReader(byte[] fileReference)
 		{
-			return _cas.Open(fileReference);
+			return _cas.OpenReader(fileReference);
 		}
 
 		byte[] IExternalBlobConnection.Store(Stream stream)
@@ -77,7 +77,7 @@ namespace NHibernate.Lob.External
 
 		protected override DbCommand CreateDbCommand()
 		{
-			return new ExternalBlobDbCommandProxy(this, _db.CreateCommand() as DbCommand);
+			return new ExternalBlobDbCommandWrapper(this, _db.CreateCommand() as DbCommand);
 		}
 
 		public override string DataSource
@@ -103,6 +103,22 @@ namespace NHibernate.Lob.External
 		public override ConnectionState State
 		{
 			get { return _db.State; }
+		}
+
+
+		ExternalBlobWriter IExternalBlobConnection.OpenWriter()
+		{
+			return _cas.OpenWriter();
+		}
+
+		void IExternalBlobConnection.ReadInto(byte[] blobIdentifier, Stream output)
+		{
+			_cas.ReadInto(blobIdentifier, output);
+		}
+
+		void IExternalBlobConnection.GarbageCollect(System.Collections.Generic.IEnumerable<byte[]> livingBlobIdentifiers)
+		{
+			_cas.GarbageCollect(livingBlobIdentifiers);
 		}
 	}
 }

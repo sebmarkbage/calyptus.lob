@@ -4,6 +4,7 @@ using System.Data;
 using System.IO;
 using System.Collections.Generic;
 using NHibernate.Connection;
+using System.Configuration;
 
 namespace NHibernate.Lob.External
 {
@@ -20,14 +21,26 @@ namespace NHibernate.Lob.External
 
 		public void Configure(IDictionary<string, string> settings)
 		{
+			System.Type providerType;
 			string t;
-			if (settings.TryGetValue(casConnectionProviderProperty, out t) && t != null)
+			if (settings.TryGetValue(ExternalBlobs.ConnectionProviderProperty, out t) && t != null)
 			{
-				Type providerType = Type.GetType(t);
+				providerType = System.Type.GetType(t);
 				_provider = (IExternalBlobConnectionProvider)System.Activator.CreateInstance(providerType);
-
-				if (settings.TryGetValue(casConnectionStringProperty, out t))
-					_provider.ConnectionString = t;
+				_provider.Configure(settings);
+			}
+			else if (settings.TryGetValue(ExternalBlobs.ConnectionStringNameProperty, out t) && t != null)
+			{
+				ConnectionStringSettings connectionStringSettings = ConfigurationManager.ConnectionStrings[t];
+				if (connectionStringSettings != null && !string.IsNullOrEmpty(connectionStringSettings.ProviderName))
+				{
+					providerType = System.Type.GetType(connectionStringSettings.ProviderName);
+					if (typeof(IExternalBlobConnectionProvider).IsAssignableFrom(providerType))
+					{
+						_provider = (IExternalBlobConnectionProvider)System.Activator.CreateInstance(providerType);
+						_provider.Configure(settings);
+					}
+				}
 			}
 			_base.Configure(settings);
 		}
@@ -35,7 +48,7 @@ namespace NHibernate.Lob.External
 		public IDbConnection GetConnection()
 		{
 			if (_provider == null) return _base.GetConnection();
-			else return new ExternalBlobDbConnectionProxy(_base.GetConnection(), _provider.GetConnection());
+			else return new ExternalBlobDbConnectionWrapper(_base.GetConnection(), _provider.GetConnection());
 		}
 
 		public void CloseConnection(IDbConnection conn)
@@ -45,7 +58,7 @@ namespace NHibernate.Lob.External
 
 		public global::NHibernate.Driver.IDriver Driver
 		{
-			get { return new ExternalBlobDriverProxy(_base.Driver); }
+			get { return new ExternalBlobDriverWrapper(_base.Driver); }
 		}
 
 		public void Dispose()

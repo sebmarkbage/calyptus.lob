@@ -21,44 +21,73 @@ using NHibernate.Util;
 
 namespace NHibernate.Lob.External
 {
-	public class CasBlobType : AbstractType
+	public abstract class AbstractExternalBlobType : AbstractType
 	{
-		private IExternalBlobConnection GetCasConnection(IDbConnection connection)
+		private int identifierLength;
+
+		protected IExternalBlobConnection GetExternalBlobConnection(ISessionImplementor connection)
 		{
 			if (connection == null) throw new NullReferenceException("CasBlobType requires an open connection.");
 			IExternalBlobConnection c = connection as IExternalBlobConnection;
 			if (c == null) throw new Exception("CasBlobType requires a ICasConnection. Make sure you use DriverAndCasStorageConnectionProvider and specify an ICasConnectionProvider in your NHibernate configuration.");
+			if (identifierLength == 0) identifierLength = c.BlobIdentifierLength;
 			return c;
 		}
 
+		protected abstract object CreateLobInstance(IExternalBlobConnection connection, byte[] identifier);
+
+		protected abstract bool ExtractLobData(object lob, out IExternalBlobConnection connection, out byte[] identifier);
+
+		protected abstract void WriteLobTo(object lob, Stream output);
+
 		public override string ToLoggableString(object value, ISessionFactoryImplementor factory)
 		{
-			CasStream cs = value as CasStream;
-			if (cs == null) return null;
-			StringBuilder sb = new StringBuilder();
-			foreach (byte b in cs.ContentIdentifier)
-				sb.Append(b.ToString("x"));
-			return sb.ToString();
+			IExternalBlobConnection blobconn;
+			byte[] identifier;
+			if (this.ExtractLobData(value, out blobconn, out identifier))
+			{
+				StringBuilder sb = new StringBuilder();
+				foreach (byte b in identifier)
+					sb.Append(b.ToString("x2"));
+				return sb.ToString();
+			}
+			return null;
 		}
 
 		public override object Assemble(object cached, ISessionImplementor session, object owner)
 		{
 			byte[] identifier = cached as byte[];
 			if (identifier == null) return null;
-			IExternalBlobConnection conn = GetCasConnection(session.Connection);
-			return new CasStream(conn, identifier);
+			IExternalBlobConnection conn = GetExternalBlobConnection(session);
+			return CreateLobInstance(conn, identifier);
 		}
 
 		public override object Disassemble(object value, ISessionImplementor session, object owner)
 		{
-			CasStream s = value as CasStream;
-			if (s != null)
+			if (value == null) return null;
+			IExternalBlobConnection blobconn;
+			byte[] identifier;
+			if (this.ExtractLobData(value, out blobconn, out identifier))
 			{
-				IExternalBlobConnection conn = GetCasConnection(session.Connection);
-				if (conn.Equals(s.Connection))
-					return s.ContentIdentifier;
+				IExternalBlobConnection conn = GetExternalBlobConnection(session);
+				if (conn.Equals(blobconn))
+					return identifier;
 			}
-			return null;
+			throw new Exception("Unable to cache an unsaved lob.");
+		}
+
+		public override object DeepCopy(object value, EntityMode entityMode, ISessionFactoryImplementor factory)
+		{
+			IExternalBlobConnection blobconn;
+			byte[] identifier;
+			if (this.ExtractLobData(value, out blobconn, out identifier))
+				return CreateLobInstance(blobconn, identifier);
+			return value;
+		}
+
+		public override object Replace(object original, object target, ISessionImplementor session, object owner, IDictionary copiedAlready)
+		{
+			return original;
 		}
 
 		public override void NullSafeSet(IDbCommand cmd, object value, int index, bool[] settable, ISessionImplementor session)
@@ -68,17 +97,22 @@ namespace NHibernate.Lob.External
 
 		public override void NullSafeSet(IDbCommand cmd, object value, int index, ISessionImplementor session)
 		{
-			Stream s = value as Stream;
-			if (s == null)
+			if (value == null)
 			{
 				((IDataParameter)cmd.Parameters[index]).Value = DBNull.Value;
 			}
 			else
 			{
-				IExternalBlobConnection conn = GetCasConnection(session.Connection);
-				CasStream cs = s as CasStream;
-				// If an equal connection is used, skip store
-				((IDataParameter)cmd.Parameters[index]).Value = (cs != null && conn.Equals(cs.Connection)) ? cs.ContentIdentifier : conn.Store(s);
+				IExternalBlobConnection conn = GetExternalBlobConnection(session);
+				IExternalBlobConnection blobconn;
+				byte[] identifier;
+				if (!ExtractLobData(value, out blobconn, out identifier) || !conn.Equals(blobconn)) // Skip writing if an equal connection is used
+					using (ExternalBlobWriter writer = conn.OpenWriter())
+					{
+						WriteLobTo(value, writer);
+						identifier = writer.Commit();
+					}
+				((IDataParameter)cmd.Parameters[index]).Value = identifier;
 			}
 		}
 
@@ -93,43 +127,19 @@ namespace NHibernate.Lob.External
 
 			if (rs.IsDBNull(index)) return null;
 
-			IExternalBlobConnection conn = GetCasConnection(session.Connection);
+			IExternalBlobConnection conn = GetExternalBlobConnection(session);
 
 			byte[] identifier = new byte[conn.BlobIdentifierLength];
 
 			int i = (int)rs.GetBytes(index, 0, identifier, 0, identifier.Length);
-			if (i != identifier.Length) throw new Exception("Unknown CAS identifier length. Expected " + identifier.Length.ToString() + " bytes");
+			if (i != identifier.Length) throw new Exception("Unknown identifier length. Expected " + identifier.Length.ToString() + " bytes");
 
-			return new CasStream(conn, identifier);
-		}
-
-		public override object DeepCopy(object val, EntityMode entityMode, ISessionFactoryImplementor factory)
-		{
-			CasStream s = val as CasStream;
-			if (s != null)
-				return new CasStream(s.Connection, s.ContentIdentifier);
-			return val;
-		}
-
-		public override object Replace(object original, object target, ISessionImplementor session, object owner, IDictionary copiedAlready)
-		{
-			CasStream os = original as CasStream;
-			CasStream ts = target as CasStream;
-
-			if (os != null && ts != null && System.Array.Equals(os.ContentIdentifier, ts.ContentIdentifier))
-				return target;
-
-			return original;
+			return CreateLobInstance(conn, identifier);
 		}
 
 		public override SqlType[] SqlTypes(IMapping mapping)
 		{
-			return new SqlType[] { new SqlType(DbType.Binary, 32) };
-		}
-
-		public override System.Type ReturnedClass
-		{
-			get { return typeof(Stream); }
+			return new SqlType[] { new SqlType(DbType.Binary, this.identifierLength == 0 ? 32 : this.identifierLength) };
 		}
 
 		public override int GetColumnSpan(IMapping session)
@@ -164,15 +174,13 @@ namespace NHibernate.Lob.External
 
 		public override string Name
 		{
-			get { return "CASIdentifier"; }
+			get { return "ExternalBlobIdentifier"; }
 		}
 
 		public override bool Equals(object obj)
 		{
 			if (this == obj) return true;
-
 			if (obj == null) return false;
-
 			return this.GetType() == obj.GetType();
 		}
 

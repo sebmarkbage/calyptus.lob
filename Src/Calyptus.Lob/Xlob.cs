@@ -8,6 +8,14 @@ namespace Calyptus.Lob
 {
 	public abstract class Xlob
 	{
+		public static Xlob Empty
+		{
+			get
+			{
+				return new EmptyXlob();
+			}
+		}
+
 		public static Xlob Create(Stream stream)
 		{
 			return Create(stream, new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment, CloseInput = false }, null);

@@ -11,16 +11,16 @@ namespace NHibernate.Lob.External
 		void IExternalBlobConnectionProvider.Configure(System.Collections.Generic.IDictionary<string, string> settings)
 		{
 			string connStr;
-			if (settings.TryGetValue(Utils.ConnectionStringProperty, out connStr))
-			{
-				ConnectionString = connStr;
-			}
-			else if (settings.TryGetValue(Utils.ConnectionStringNameProperty, out connStr))
+			if (settings.TryGetValue(ExternalBlobs.ConnectionStringNameProperty, out connStr))
 			{
 				ConnectionStringSettings connectionStringSettings = ConfigurationManager.ConnectionStrings[connStr];
 				if (connectionStringSettings == null)
-					throw new HibernateException(string.Format("Could not find named connection string {0}", connStringName));
+					throw new HibernateException(string.Format("Could not find named connection string {0}", connStr));
 				ConnectionString = connectionStringSettings.ConnectionString;
+			}
+			else if (settings.TryGetValue(ExternalBlobs.ConnectionStringProperty, out connStr))
+			{
+				ConnectionString = connStr;
 			}
 		}
 	}

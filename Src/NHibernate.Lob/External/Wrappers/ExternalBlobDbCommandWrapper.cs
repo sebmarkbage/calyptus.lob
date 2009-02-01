@@ -4,12 +4,12 @@ using System.Data;
 
 namespace NHibernate.Lob.External
 {
-	public class ExternalBlobDbCommandProxy : DbCommand
+	public class ExternalBlobDbCommandWrapper : DbCommand
 	{
 		DbCommand cmd;
 		DbConnection conn;
 
-		public ExternalBlobDbCommandProxy(DbConnection conn, DbCommand cmd)
+		public ExternalBlobDbCommandWrapper(DbConnection conn, DbCommand cmd)
 		{
 			this.cmd = cmd;
 			this.conn = conn;
@@ -70,7 +70,7 @@ namespace NHibernate.Lob.External
 			set
 			{
 				conn = value;
-				cmd.Connection = ((ExternalBlobDbConnectionProxy)value)._db as DbConnection;
+				cmd.Connection = ((ExternalBlobDbConnectionWrapper)value)._db as DbConnection;
 			}
 		}
 

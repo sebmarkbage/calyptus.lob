@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Calyptus.Lobs")]
+[assembly: AssemblyTitle("Calyptus.Lob")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Calyptus.Lobs")]
+[assembly: AssemblyProduct("Calyptus.Lob")]
 [assembly: AssemblyCopyright("Copyright © Calyptus Life AB 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

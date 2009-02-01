@@ -8,8 +8,10 @@ namespace NHibernate.Lob.External
 	{
 		int BlobIdentifierLength { get; }
 		void Delete(byte[] blobIdentifier);
-		Stream Open(byte[] blobIdentifier);
-		byte[] Store(Stream stream);
+		Stream OpenReader(byte[] blobIdentifier);
+		ExternalBlobWriter OpenWriter();
+		byte[] Store(Stream input);
+		void ReadInto(byte[] blobIdentifier, Stream output);
 		bool Equals(IExternalBlobConnection connection);
 		void GarbageCollect(IEnumerable<byte[]> livingBlobIdentifiers);
 	}
