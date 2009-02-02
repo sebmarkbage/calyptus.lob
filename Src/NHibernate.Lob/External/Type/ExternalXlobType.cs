@@ -7,7 +7,7 @@ using Calyptus.Lob;
 
 namespace NHibernate.Lob.External
 {
-	public abstract class ExternalXlobType : AbstractExternalBlobType, IParameterizedType
+	public class ExternalXlobType : AbstractExternalBlobType, IParameterizedType
 	{
 		private IXmlCompressor compression;
 		public IXmlCompressor Compression

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace NHibernate.Lob.External
 {
-	public abstract class ExternalClobType : AbstractExternalBlobType, IParameterizedType
+	public class ExternalClobType : AbstractExternalBlobType, IParameterizedType
 	{
 		private IStreamCompressor compression;
 		public IStreamCompressor Compression
