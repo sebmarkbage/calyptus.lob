@@ -53,6 +53,7 @@ namespace NHibernate.Lob.Compression
 		public XmlTextCompressor()
 		{
 			rsettings = new XmlReaderSettings();
+			wsettings = new XmlWriterSettings();
 			rsettings.ConformanceLevel = ConformanceLevel.Fragment;
 			wsettings.ConformanceLevel = ConformanceLevel.Document;
 			wsettings.Encoding = Encoding.UTF8;
@@ -80,7 +81,7 @@ namespace NHibernate.Lob.Compression
 
 		public XmlWriter GetCompressor(Stream output)
 		{
-			return XmlWriter.Create(output, wsettings);
+			return XmlWriter.Create(compressor == null ? output : compressor.GetCompressor(output), wsettings);
 		}
 
 		public override bool Equals(object obj)

@@ -26,6 +26,30 @@ namespace NHibernate.Lob
 		protected abstract object GetData(object value);
 		protected abstract object GetValue(object data);
 
+		protected virtual object Get(IDataReader rs, int ordinal)
+		{
+			int bufferSize = 0x1000;
+			byte[] buffer = new byte[bufferSize];
+
+			int readBytes = (int)rs.GetBytes(ordinal, 0L, buffer, 0, bufferSize);
+			long position = readBytes;
+			MemoryStream data = new MemoryStream(readBytes);
+			if (readBytes >= bufferSize)
+				while (readBytes > 0)
+				{
+					data.Write(buffer, 0, readBytes);
+					position += (readBytes = (int)rs.GetBytes(ordinal, position, buffer, 0, bufferSize));
+				}
+
+			data.Write(buffer, 0, readBytes);
+			data.Flush();
+			if (data.Length == 0)
+				return GetValue(new byte[0]);
+
+			data.Seek(0L, SeekOrigin.Begin);
+			return GetValue(data.GetBuffer());
+		}
+
 		public override string ToLoggableString(object value, ISessionFactoryImplementor factory)
 		{
 			return "[LOB]";
@@ -77,30 +101,6 @@ namespace NHibernate.Lob
 			return Get(rs, i);
 		}
 
-		protected virtual object Get(IDataReader rs, int ordinal)
-		{
-			int bufferSize = 0x1000;
-			byte[] buffer = new byte[bufferSize];
-
-			int readBytes = (int)rs.GetBytes(ordinal, 0L, buffer, 0, bufferSize);
-			long position = readBytes;
-			MemoryStream data = new MemoryStream(readBytes);
-			if (readBytes >= bufferSize)
-				while (readBytes > 0)
-				{
-					data.Write(buffer, 0, readBytes);
-					position += (readBytes = (int)rs.GetBytes(ordinal, position, buffer, 0, bufferSize));
-				}
-
-			data.Write(buffer, 0, readBytes);
-			data.Flush();
-			if (data.Length == 0)
-				return GetValue(new byte[0]);
-
-			data.Seek(0L, SeekOrigin.Begin);
-			return GetValue(data.GetBuffer());
-		}
-
 		public override int GetColumnSpan(IMapping session)
 		{
 			return 1;
@@ -141,6 +141,11 @@ namespace NHibernate.Lob
 		public override int GetHashCode()
 		{
 			return this.GetType().GetHashCode();
+		}
+
+		public override string Name
+		{
+			get { return this.GetType().Name; }
 		}
 	}
 }

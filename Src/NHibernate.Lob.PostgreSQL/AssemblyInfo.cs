@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NHibernate.Lob.SqlServer")]
+[assembly: AssemblyTitle("NHibernate.Lob.PostgreSQL")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("NHibernate.Lob.SqlServer")]
-[assembly: AssemblyCopyright("Copyright © Calyptus Life AB 2009")]
+[assembly: AssemblyProduct("NHibernate.Lob.PostgreSQL")]
+[assembly: AssemblyCopyright("Copyright © Calyputs Life AB 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("51b9b845-ea69-49c8-9df4-91be5e53d2b7")]
+[assembly: Guid("0a820167-3a0e-4744-8969-a680c2e7c8d7")]
 
 // Version information for an assembly consists of the following four values:
 //

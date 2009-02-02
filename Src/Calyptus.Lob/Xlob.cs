@@ -111,14 +111,21 @@ namespace Calyptus.Lob
 
 		public virtual void WriteTo(TextWriter writer)
 		{
-			using (var xw = XmlWriter.Create(writer))
+			XmlWriterSettings settings = new XmlWriterSettings();
+			settings.ConformanceLevel = ConformanceLevel.Fragment;
+			settings.CloseOutput = false;
+			using (var xw = XmlWriter.Create(writer, settings))
 				WriteTo(xw);
 		}
 
 		public virtual void WriteTo(Stream output, Encoding encoding)
 		{
-			using (var sw = new StreamWriter(output, encoding))
-				WriteTo(sw);
+			XmlWriterSettings settings = new XmlWriterSettings();
+			settings.Encoding = encoding;
+			settings.ConformanceLevel = ConformanceLevel.Fragment;
+			settings.CloseOutput = false;
+			using (var xw = XmlWriter.Create(output, settings))
+				WriteTo(xw);
 		}
 
 		public override bool Equals(object obj)

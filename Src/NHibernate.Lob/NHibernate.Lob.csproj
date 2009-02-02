@@ -58,7 +58,7 @@
     <Compile Include="CompressedClob.cs" />
     <Compile Include="CompressedXlob.cs" />
     <Compile Include="External\AbstractExternalBlobConnection.cs" />
-    <Compile Include="External\ExternalBlobs.cs" />
+    <Compile Include="External\Environment.cs" />
     <Compile Include="External\AbstractExternalBlobConnectionProvider.cs" />
     <Compile Include="External\ExternalBlobWriter.cs" />
     <Compile Include="External\Impl\ExternalBlob.cs" />

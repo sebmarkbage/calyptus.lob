@@ -59,6 +59,7 @@ namespace NHibernate.Lob.External
 
 		Stream IExternalBlobConnection.OpenReader(byte[] blobIdentifier)
 		{
+			if (openedStreams == null) throw new Exception("The ExternalBlobConnection has been closed.");
 			Stream s = this.OpenReader(blobIdentifier);
 			openedStreams.Add(new WeakReference(s));
 			return s;
@@ -66,6 +67,7 @@ namespace NHibernate.Lob.External
 
 		ExternalBlobWriter IExternalBlobConnection.OpenWriter()
 		{
+			if (openedStreams == null) throw new Exception("The ExternalBlobConnection has been closed.");
 			ExternalBlobWriter w = this.OpenWriter();
 			openedStreams.Add(new WeakReference(w));
 			return w;

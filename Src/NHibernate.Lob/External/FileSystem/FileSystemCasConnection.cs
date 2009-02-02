@@ -23,7 +23,7 @@ namespace NHibernate.Lob.External
 				hashLength = 20;
 			else
 				using (HashAlgorithm hash = HashAlgorithm.Create(hashName))
-					hashLength = hash.HashSize;
+					hashLength = hash.HashSize / 8;
 		}
 
 		public override Stream OpenReader(byte[] contentIdentifier)

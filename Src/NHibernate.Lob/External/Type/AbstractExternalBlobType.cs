@@ -25,11 +25,11 @@ namespace NHibernate.Lob.External
 	{
 		private int identifierLength;
 
-		protected IExternalBlobConnection GetExternalBlobConnection(ISessionImplementor connection)
+		protected IExternalBlobConnection GetExternalBlobConnection(ISessionImplementor session)
 		{
-			if (connection == null) throw new NullReferenceException("CasBlobType requires an open connection.");
-			IExternalBlobConnection c = connection as IExternalBlobConnection;
-			if (c == null) throw new Exception("CasBlobType requires a ICasConnection. Make sure you use DriverAndCasStorageConnectionProvider and specify an ICasConnectionProvider in your NHibernate configuration.");
+			if (session.Connection == null) throw new NullReferenceException("CasBlobType requires an open connection.");
+			IExternalBlobConnection c = session.Connection as IExternalBlobConnection;
+			if (c == null) throw new Exception("ExternalBlobTypes requires a IExternalBlobConnection. Make sure you use NHibernate.Lob.External.DriverConnectionProvider and specify an IExternalBlobConnectionProvider in your NHibernate configuration.");
 			if (identifierLength == 0) identifierLength = c.BlobIdentifierLength;
 			return c;
 		}

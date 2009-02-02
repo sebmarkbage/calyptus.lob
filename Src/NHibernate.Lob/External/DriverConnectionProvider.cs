@@ -23,13 +23,13 @@ namespace NHibernate.Lob.External
 		{
 			System.Type providerType;
 			string t;
-			if (settings.TryGetValue(ExternalBlobs.ConnectionProviderProperty, out t) && t != null)
+			if (settings.TryGetValue(Environment.ConnectionProviderProperty, out t) && t != null)
 			{
 				providerType = System.Type.GetType(t);
 				_provider = (IExternalBlobConnectionProvider)System.Activator.CreateInstance(providerType);
 				_provider.Configure(settings);
 			}
-			else if (settings.TryGetValue(ExternalBlobs.ConnectionStringNameProperty, out t) && t != null)
+			else if (settings.TryGetValue(Environment.ConnectionStringNameProperty, out t) && t != null)
 			{
 				ConnectionStringSettings connectionStringSettings = ConfigurationManager.ConnectionStrings[t];
 				if (connectionStringSettings != null && !string.IsNullOrEmpty(connectionStringSettings.ProviderName))

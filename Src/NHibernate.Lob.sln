@@ -11,10 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Lob.SqlServer", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calyptus.Lob", "Calyptus.Lob\Calyptus.Lob.csproj", "{548E083F-F742-41B7-8971-6004E85907AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Lob.PostgreSQL", "NHibernate.Lob.PostgreSQL\NHibernate.Lob.PostgreSQL.csproj", "{61E96990-9B52-4F0D-B8EF-0FA5741D1D22}"
+EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = NHibernate.Lob.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -40,6 +39,10 @@ Global
 		{548E083F-F742-41B7-8971-6004E85907AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{548E083F-F742-41B7-8971-6004E85907AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{548E083F-F742-41B7-8971-6004E85907AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61E96990-9B52-4F0D-B8EF-0FA5741D1D22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61E96990-9B52-4F0D-B8EF-0FA5741D1D22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61E96990-9B52-4F0D-B8EF-0FA5741D1D22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61E96990-9B52-4F0D-B8EF-0FA5741D1D22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

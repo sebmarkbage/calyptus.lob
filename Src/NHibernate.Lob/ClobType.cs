@@ -5,6 +5,7 @@ using System.Collections;
 using Calyptus.Lob;
 using System.IO;
 using NHibernate.SqlTypes;
+using NHibernate.Engine;
 
 namespace NHibernate.Lob
 {
@@ -85,20 +86,12 @@ namespace NHibernate.Lob
 			}
 		}
 
-		public override SqlType[] SqlTypes(NHibernate.Engine.IMapping mapping)
+		public override SqlType[] SqlTypes(IMapping mapping)
 		{
 			if (compression == null)
 				return new SqlType[] { new StringClobSqlType() };
 			else
 				return new SqlType[] { new BinaryBlobSqlType() };
-		}
-
-		public override string Name
-		{
-			get
-			{
-				return "Clob";
-			}
 		}
 
 		public override System.Type ReturnedClass

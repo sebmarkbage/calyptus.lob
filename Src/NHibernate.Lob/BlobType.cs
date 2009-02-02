@@ -54,14 +54,6 @@ namespace NHibernate.Lob
 			return new SqlType[] { new BinaryBlobSqlType() };
 		}
 
-		public override string Name
-		{
-			get
-			{
-				return "Blob";
-			}
-		}
-
 		public override System.Type ReturnedClass
 		{
 			get { return typeof(Blob); }

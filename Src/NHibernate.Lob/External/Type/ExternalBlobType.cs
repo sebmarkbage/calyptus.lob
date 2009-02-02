@@ -20,20 +20,7 @@ namespace NHibernate.Lob.External
 
 		public virtual void SetParameterValues(IDictionary parameters)
 		{
-			string compression = parameters["compression"] as string;
-			if (!string.IsNullOrEmpty(compression))
-				if (compression.Equals("gzip", StringComparison.OrdinalIgnoreCase))
-				{
-					this.compression = GZipCompressor.Instance;
-				}
-				else
-				{
-					System.Type compressor = System.Type.GetType(compression);
-					this.compression = (IStreamCompressor)System.Activator.CreateInstance(compressor);
-					IParameterizedType parameterized = this.compression as IParameterizedType;
-					if (parameterized != null)
-						parameterized.SetParameterValues(parameters);
-				}
+			Parameters.GetBlobSettings(parameters, out compression);
 		}
 
 		protected override object CreateLobInstance(IExternalBlobConnection connection, byte[] identifier)
