@@ -35,6 +35,7 @@
     <Reference Include="Calyptus.Lob, Version=1.0.0.23963, Culture=neutral, PublicKeyToken=8d567450aca6da49, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Calyptus.Lob\bin\Release\Calyptus.Lob.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="NHibernate, Version=0.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

@@ -154,7 +154,7 @@ namespace NHibernate.Lob.External
 			private string tempFile;
 			private FileStream tempStream;
 			private HashAlgorithm hash;
-			private byte[] cryptBuffer;
+			//private byte[] cryptBuffer;
 			private FileSystemCasConnection connection;
 
 			public FileSystemCasBlobWriter(FileSystemCasConnection connection)
@@ -162,7 +162,8 @@ namespace NHibernate.Lob.External
 				if (connection == null) throw new ArgumentNullException("connection");
 				this.connection = connection;
 
-				HashAlgorithm hash = connection.hashName == null ? new SHA1CryptoServiceProvider() : HashAlgorithm.Create(connection.hashName);
+				hash = connection.hashName == null ? new SHA1CryptoServiceProvider() : HashAlgorithm.Create(connection.hashName);
+				if (hash == null) throw new Exception("Missing hash algorithm: " + connection.hashName);
 				Random r = new Random();
 				string temp;
 				int i = 0;
@@ -213,7 +214,7 @@ namespace NHibernate.Lob.External
 				tempStream.Flush();
 				tempStream.Dispose();
 
-				hash.TransformFinalBlock(cryptBuffer, 0, 0);
+				hash.TransformFinalBlock(new byte[0], 0, 0);
 
 				byte[] id = hash.Hash;
 				connection.CreateFolder(id);
@@ -253,7 +254,7 @@ namespace NHibernate.Lob.External
 					if (hash != null) ((IDisposable)hash).Dispose();
 					hash = null;
 					connection = null;
-					cryptBuffer = null;
+					//cryptBuffer = null;
 				}
 				base.Dispose(disposing);
 			}
