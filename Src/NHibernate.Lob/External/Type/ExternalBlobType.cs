@@ -46,7 +46,11 @@ namespace NHibernate.Lob.External
 		{
 			Blob blob = lob as Blob;
 			if (blob == null) return;
-			blob.WriteTo(output);
+			if (compression == null)
+				blob.WriteTo(output);
+			else
+				using (Stream cs = compression.GetCompressor(output))
+					blob.WriteTo(cs);
 		}
 
 		public override System.Type ReturnedClass

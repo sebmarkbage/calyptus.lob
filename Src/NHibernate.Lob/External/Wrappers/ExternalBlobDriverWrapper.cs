@@ -47,5 +47,10 @@ namespace NHibernate.Lob.External
 		{
 			get { return _base.MultipleQueriesSeparator; }
 		}
+
+		public System.Data.IDbDataParameter GenerateParameter(System.Data.IDbCommand command, string name, NHibernate.SqlTypes.SqlType sqlType)
+		{
+			return _base.GenerateParameter(command, name, sqlType);
+		}
 	}
 }

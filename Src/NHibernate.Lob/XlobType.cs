@@ -44,7 +44,6 @@ namespace NHibernate.Lob
 				using (StringWriter sw = new StringWriter())
 				{
 					xlob.WriteTo(sw);
-					sw.Flush();
 					return sw.ToString();
 				}
 			}
@@ -52,12 +51,11 @@ namespace NHibernate.Lob
 			{
 				CompressedXlob cx = xlob as CompressedXlob;
 				if (cx != null && cx.Compression.Equals(compression)) return cx.Data;
-				using (MemoryStream data = new MemoryStream(0))
-				using (XmlWriter xw = compression.GetCompressor(data))
+				using (MemoryStream data = new MemoryStream())
 				{
-					xlob.WriteTo(xw);
-					xw.Flush();
-					return data.GetBuffer();
+					using (XmlWriter xw = compression.GetCompressor(data))
+						xlob.WriteTo(xw);
+					return data.ToArray();
 				}
 			}
 		}

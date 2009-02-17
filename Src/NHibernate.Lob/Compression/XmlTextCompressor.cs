@@ -53,10 +53,12 @@ namespace NHibernate.Lob.Compression
 		public XmlTextCompressor()
 		{
 			rsettings = new XmlReaderSettings();
+			rsettings.CloseInput = true;
 			wsettings = new XmlWriterSettings();
 			rsettings.ConformanceLevel = ConformanceLevel.Fragment;
-			wsettings.ConformanceLevel = ConformanceLevel.Document;
+			wsettings.ConformanceLevel = ConformanceLevel.Fragment;
 			wsettings.Encoding = Encoding.UTF8;
+			wsettings.CloseOutput = true;
 		}
 
 		public XmlTextCompressor(IStreamCompressor compressor) : this()

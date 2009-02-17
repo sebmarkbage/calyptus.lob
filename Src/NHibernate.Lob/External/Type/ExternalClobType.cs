@@ -60,7 +60,13 @@ namespace NHibernate.Lob.External
 		{
 			Clob clob = lob as Clob;
 			if (clob == null) return;
-			clob.WriteTo(new StreamWriter(compression == null ? output : compression.GetCompressor(output), encoding));
+			if (compression == null)
+				using (StreamWriter sw = new StreamWriter(output, encoding))
+					clob.WriteTo(sw);
+			else
+				using (Stream cs = compression.GetCompressor(output))
+				using (StreamWriter sw = new StreamWriter(cs, encoding))
+					clob.WriteTo(sw);
 		}
 
 		public override System.Type ReturnedClass

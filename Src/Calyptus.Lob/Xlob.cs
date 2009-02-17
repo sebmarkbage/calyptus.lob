@@ -115,7 +115,10 @@ namespace Calyptus.Lob
 			settings.ConformanceLevel = ConformanceLevel.Fragment;
 			settings.CloseOutput = false;
 			using (var xw = XmlWriter.Create(writer, settings))
+			{
 				WriteTo(xw);
+				xw.Flush();
+			}
 		}
 
 		public virtual void WriteTo(Stream output, Encoding encoding)
@@ -125,7 +128,10 @@ namespace Calyptus.Lob
 			settings.ConformanceLevel = ConformanceLevel.Fragment;
 			settings.CloseOutput = false;
 			using (var xw = XmlWriter.Create(output, settings))
+			{
 				WriteTo(xw);
+				xw.Flush();
+			}
 		}
 
 		public override bool Equals(object obj)

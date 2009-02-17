@@ -9,12 +9,12 @@ namespace NHibernate.Lob.Compression
 
 		public Stream GetDecompressor(Stream input)
 		{
-			return new GZipStream(input, CompressionMode.Decompress, false);
+			return new GZipStream(input, CompressionMode.Decompress, true);
 		}
 
 		public Stream GetCompressor(Stream output)
 		{
-			return new GZipStream(output, CompressionMode.Compress, false);
+			return new GZipStream(output, CompressionMode.Compress, true);
 		}
 
 		public override bool Equals(object obj)

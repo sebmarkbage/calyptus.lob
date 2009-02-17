@@ -33,21 +33,22 @@ namespace NHibernate.Lob
 
 			int readBytes = (int)rs.GetBytes(ordinal, 0L, buffer, 0, bufferSize);
 			long position = readBytes;
-			MemoryStream data = new MemoryStream(readBytes);
-			if (readBytes >= bufferSize)
-				while (readBytes > 0)
-				{
-					data.Write(buffer, 0, readBytes);
-					position += (readBytes = (int)rs.GetBytes(ordinal, position, buffer, 0, bufferSize));
-				}
+			using (MemoryStream data = new MemoryStream(readBytes))
+			{
+				if (readBytes >= bufferSize)
+					while (readBytes > 0)
+					{
+						data.Write(buffer, 0, readBytes);
+						position += (readBytes = (int)rs.GetBytes(ordinal, position, buffer, 0, bufferSize));
+					}
 
-			data.Write(buffer, 0, readBytes);
-			data.Flush();
-			if (data.Length == 0)
-				return GetValue(new byte[0]);
+				data.Write(buffer, 0, readBytes);
+				data.Flush();
+				if (data.Length == 0)
+					return GetValue(new byte[0]);
 
-			data.Seek(0L, SeekOrigin.Begin);
-			return GetValue(data.GetBuffer());
+				return GetValue(data.ToArray());
+			}
 		}
 
 		public override string ToLoggableString(object value, ISessionFactoryImplementor factory)

@@ -33,10 +33,15 @@ namespace NHibernate.Lob
 			if (ab != null && compression == null) return ab.Data;
 			CompressedBlob cb = blob as CompressedBlob;
 			if (cb != null && cb.Compression.Equals(compression)) return cb.Data;
-			MemoryStream data = new MemoryStream(0);
-			blob.WriteTo(compression == null ? data : compression.GetCompressor(data));
-			data.Flush();
-			return data.GetBuffer();
+			using (MemoryStream data = new MemoryStream())
+			{
+				if (compression == null)
+					blob.WriteTo(data);
+				else
+					using (Stream cs = compression.GetCompressor(data))
+						blob.WriteTo(cs);
+				return data.ToArray();
+			}
 		}
 
 		protected override object GetValue(object dataObj)

@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.IO;
 using Calyptus.Lob;
+using System.Xml;
 
 namespace NHibernate.Lob.External
 {
@@ -53,7 +54,8 @@ namespace NHibernate.Lob.External
 		{
 			Xlob xlob = lob as Xlob;
 			if (xlob == null) return;
-			xlob.WriteTo(compression.GetCompressor(output));
+			using (XmlWriter xw = compression.GetCompressor(output))
+				xlob.WriteTo(xw);
 		}
 
 		public override System.Type ReturnedClass
