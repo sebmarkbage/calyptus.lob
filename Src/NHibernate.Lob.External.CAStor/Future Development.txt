@@ -1,0 +1,4 @@
+This is a placeholder for future development of NHibernate External
+storage support using Caringo CAStor storage system.
+
+If you would like to contribute, feel free to contact info@calyptus.eu

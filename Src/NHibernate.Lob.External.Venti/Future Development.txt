@@ -1,0 +1,4 @@
+This is a placeholder for future development of NHibernate External
+storage support using Plan9 Venti storage server.
+
+If you would like to contribute, feel free to contact info@calyptus.eu
