@@ -86,10 +86,16 @@
     <Compile Include="Oracle\BFileBlobType.cs" />
     <Compile Include="Oracle\BFileClobType.cs" />
     <Compile Include="Oracle\BFileXlobType.cs" />
+    <Compile Include="Oracle\OracleClobType.cs" />
+    <Compile Include="Oracle\OracleXlobType.cs" />
+    <Compile Include="Oracle\OracleBlobType.cs" />
     <Compile Include="Parameters.cs" />
+    <Compile Include="SqlClient\SqlXlobType.cs" />
+    <Compile Include="SqlClient\SqlClobType.cs" />
     <Compile Include="SqlClient\FileStreamClobType.cs" />
     <Compile Include="SqlClient\FileStreamXlobType.cs" />
     <Compile Include="SqlClient\FileStreamBlobType.cs" />
+    <Compile Include="SqlClient\SqlBlobType.cs" />
     <Compile Include="XlobType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

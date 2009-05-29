@@ -45,6 +45,7 @@ namespace NHibernate.Lob.External
 
 		bool IExternalBlobConnection.Equals(IExternalBlobConnection connection)
 		{
+			if (connection is ExternalBlobDbConnectionWrapper) connection = (connection as ExternalBlobDbConnectionWrapper)._cas;
 			return _cas.Equals(connection);
 		}
 

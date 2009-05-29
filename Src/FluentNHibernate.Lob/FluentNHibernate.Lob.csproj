@@ -5,11 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B2478CCF-B176-49AE-BAA0-646C39D8D20C}</ProjectGuid>
+    <ProjectGuid>{7660D273-7EED-4CF2-97DB-3D18A01FF4B5}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NHibernate.Lob.Oracle</RootNamespace>
-    <AssemblyName>NHibernate.Lob.Oracle</AssemblyName>
+    <RootNamespace>FluentNHibernate.Lob</RootNamespace>
+    <AssemblyName>FluentNHibernate.Lob</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -33,29 +32,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Oracle.DataAccess, Version=2.111.6.20, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\Oracle.DataAccess.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="BFileBlobType.cs" />
-    <Compile Include="BFileClobType.cs" />
-    <Compile Include="BFileXlobType.cs" />
-    <Compile Include="OracleBlobType.cs" />
-    <Compile Include="OracleClobType.cs" />
-    <Compile Include="OracleXlobType.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Calyptus.Lob\Calyptus.Lob.csproj">
-      <Project>{548E083F-F742-41B7-8971-6004E85907AA}</Project>
-      <Name>Calyptus.Lob</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

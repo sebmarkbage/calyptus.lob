@@ -35,12 +35,16 @@
       <HintPath>..\..\Lib\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Calyptus.Lob\Calyptus.Lob.csproj">
       <Project>{548E083F-F742-41B7-8971-6004E85907AA}</Project>
       <Name>Calyptus.Lob</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CodeSamples.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

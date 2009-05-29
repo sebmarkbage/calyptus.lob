@@ -132,7 +132,7 @@ namespace NHibernate.Lob.External
 			byte[] identifier = new byte[conn.BlobIdentifierLength];
 
 			int i = (int)rs.GetBytes(index, 0, identifier, 0, identifier.Length);
-			if (i != identifier.Length) throw new Exception("Unknown identifier length. Expected " + identifier.Length.ToString() + " bytes");
+			if (i != identifier.Length) throw new Exception("Unknown identifier length. Recieved " + i.ToString() + " but expected " + identifier.Length.ToString() + " bytes");
 
 			return CreateLobInstance(conn, identifier);
 		}

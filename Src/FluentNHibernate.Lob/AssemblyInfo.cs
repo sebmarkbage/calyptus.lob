@@ -6,11 +6,11 @@ using System.Security;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NHibernate.Lob.SqlServer")]
+[assembly: AssemblyTitle("FluentNHibernate.Lob")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("NHibernate.Lob.SqlServer")]
+[assembly: AssemblyProduct("FluentNHibernate.Lob")]
 [assembly: AssemblyCopyright("Copyright © Calyptus Life AB 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -21,7 +21,7 @@ using System.Security;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("51b9b845-ea69-49c8-9df4-91be5e53d2b7")]
+[assembly: Guid("d79fd846-aebb-47d5-8a3c-02c24212a1f0")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -33,7 +33,7 @@ using System.Security;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("0.1.0.*")]
+[assembly: AssemblyFileVersion("0.1.0.0")]
 
 [assembly: AllowPartiallyTrustedCallers]
