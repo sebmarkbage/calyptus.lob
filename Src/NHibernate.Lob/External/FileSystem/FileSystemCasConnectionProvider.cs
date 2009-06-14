@@ -27,8 +27,14 @@ namespace NHibernate.Lob.External
 			if (storagePath == null) throw new NullReferenceException("Storage path cannot be null. Must be existing path.");
 			if (!System.IO.Path.IsPathRooted(storagePath))
 			{
-				if (storagePath.StartsWith("~/") && System.Web.Hosting.HostingEnvironment.IsHosted)
-					storagePath = System.Web.Hosting.HostingEnvironment.MapPath(storagePath);
+				if (storagePath.StartsWith("~/"))
+				{
+					System.Web.HttpContext context = System.Web.HttpContext.Current;
+					if (context != null)
+						storagePath = context.Request.MapPath(storagePath);
+					else if (System.Web.Hosting.HostingEnvironment.IsHosted)
+						storagePath = System.Web.Hosting.HostingEnvironment.MapPath(storagePath);
+				}
 				else
 					storagePath = Path.GetFullPath(storagePath);
 			}
