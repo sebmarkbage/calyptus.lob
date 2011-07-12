@@ -4,6 +4,7 @@ using NHibernate.UserTypes;
 using System.Collections;
 using System.Text;
 using System;
+using System.Collections.Generic;
 
 namespace NHibernate.Lob.Compression
 {
@@ -66,7 +67,7 @@ namespace NHibernate.Lob.Compression
 			this.compressor = compressor;
 		}
 
-		public void SetParameterValues(IDictionary parameters)
+		public void SetParameterValues(IDictionary<string, string> parameters)
 		{
 			string conf = parameters["conformance"] as string;
 			if (!string.IsNullOrEmpty(conf)) ConformanceLevel = (ConformanceLevel)Enum.Parse(typeof(ConformanceLevel), conf, true);

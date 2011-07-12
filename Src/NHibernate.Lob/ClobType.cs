@@ -6,6 +6,7 @@ using Calyptus.Lob;
 using System.IO;
 using NHibernate.SqlTypes;
 using NHibernate.Engine;
+using System.Collections.Generic;
 
 namespace NHibernate.Lob
 {
@@ -28,7 +29,7 @@ namespace NHibernate.Lob
 			}
 		}
 
-		public virtual void SetParameterValues(IDictionary parameters)
+		public virtual void SetParameterValues(IDictionary<string, string> parameters)
 		{
 			Parameters.GetClobSettings(parameters, out this.encoding, out this.compression);
 			if (compression != null && encoding == null) encoding = Encoding.UTF8;

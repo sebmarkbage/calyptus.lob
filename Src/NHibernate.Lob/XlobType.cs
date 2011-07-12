@@ -6,6 +6,7 @@ using System.IO;
 using NHibernate.Engine;
 using NHibernate.SqlTypes;
 using System.Xml;
+using System.Collections.Generic;
 
 namespace NHibernate.Lob
 {
@@ -20,7 +21,7 @@ namespace NHibernate.Lob
 			}
 		}
 
-		public virtual void SetParameterValues(IDictionary parameters)
+		public virtual void SetParameterValues(IDictionary<string, string> parameters)
 		{
 			Parameters.GetXlobSettings(parameters, out compression);
 		}

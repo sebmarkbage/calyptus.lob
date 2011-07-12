@@ -3,12 +3,13 @@ using NHibernate.Lob.Compression;
 using System.Text;
 using System;
 using NHibernate.UserTypes;
+using System.Collections.Generic;
 
 namespace NHibernate.Lob
 {
 	internal static class Parameters
 	{
-		internal static void GetBlobSettings(IDictionary parameters, out IStreamCompressor compression)
+		internal static void GetBlobSettings(IDictionary<string, string> parameters, out IStreamCompressor compression)
 		{
 			string compr = parameters == null ? null : parameters["compression"] as string;
 			if (string.IsNullOrEmpty(compr))
@@ -25,9 +26,9 @@ namespace NHibernate.Lob
 			}
 		}
 
-		internal static void GetClobSettings(IDictionary parameters, out Encoding encoding, out IStreamCompressor compression)
+		internal static void GetClobSettings(IDictionary<string, string> parameters, out Encoding encoding, out IStreamCompressor compression)
 		{
-			string compr = parameters == null ? null : parameters["compression"] as string;
+			string compr = parameters == null ? null : parameters["compression"];
 			if (string.IsNullOrEmpty(compr))
 				compression = null;
 			else if (compr.Equals("gzip", StringComparison.OrdinalIgnoreCase))
@@ -46,9 +47,9 @@ namespace NHibernate.Lob
 			else encoding = null;
 		}
 
-		internal static void GetXlobSettings(IDictionary parameters, out IXmlCompressor compression)
+		internal static void GetXlobSettings(IDictionary<string, string> parameters, out IXmlCompressor compression)
 		{
-			string compr = parameters == null ? null : parameters["compression"] as string;
+			string compr = parameters == null ? null : parameters["compression"];
 			if (string.IsNullOrEmpty(compr))
 				compression = null;
 			else if (compr.Equals("gzip", StringComparison.OrdinalIgnoreCase))

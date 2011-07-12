@@ -5,6 +5,7 @@ using System.Collections;
 using System.IO;
 using Calyptus.Lob;
 using System.Xml;
+using System.Collections.Generic;
 
 namespace NHibernate.Lob.External
 {
@@ -24,7 +25,7 @@ namespace NHibernate.Lob.External
 			compression = new XmlTextCompressor();
 		}
 
-		public virtual void SetParameterValues(IDictionary parameters)
+		public virtual void SetParameterValues(IDictionary<string, string> parameters)
 		{
 			IXmlCompressor c;
 			Parameters.GetXlobSettings(parameters, out c);

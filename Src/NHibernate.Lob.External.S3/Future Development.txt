@@ -1,4 +1,0 @@
-This is a place holder for future development of NHibernate External
-storage support using Amazon S3 cloud storage service.
-
-If you would like to contribute, feel free to contact info@calyptus.eu

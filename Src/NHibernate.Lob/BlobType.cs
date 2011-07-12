@@ -6,6 +6,7 @@ using NHibernate.Engine;
 using Calyptus.Lob;
 using System.IO;
 using NHibernate.SqlTypes;
+using System.Collections.Generic;
 
 namespace NHibernate.Lob
 {
@@ -20,7 +21,7 @@ namespace NHibernate.Lob
 			}
 		}
 
-		public virtual void SetParameterValues(IDictionary parameters)
+		public virtual void SetParameterValues(IDictionary<string, string> parameters)
 		{
 			Parameters.GetBlobSettings(parameters, out this.compression);
 		}
