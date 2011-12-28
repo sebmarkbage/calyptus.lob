@@ -2,6 +2,8 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Collections.Generic;
+using System.Net;
+using System.Xml;
 
 namespace NHibernate.Lob.External
 {
@@ -13,25 +15,26 @@ namespace NHibernate.Lob.External
 
 		private string tempPath;
 
-		private Amazon.S3.AmazonS3Client client;
 		private string accessKeyID;
+		private string secretAccessKeyID;
+
 		private string bucketName;
 
 		private string hashName;
 
+		private bool secure;
+
 		private int hashLength;
 
 		public S3Connection(string accessKeyID, string secretAccessKeyID, string bucketName)
+			: this(accessKeyID, secretAccessKeyID, bucketName, null, null)
 		{
-			this.client = new Amazon.S3.AmazonS3Client(accessKeyID, secretAccessKeyID);
-			this.accessKeyID = accessKeyID;
-			this.bucketName = bucketName;
 		}
 
 		public S3Connection(string accessKeyID, string secretAccessKeyID, string bucketName, string tempPath, string hashName)
 		{
-			this.client = new Amazon.S3.AmazonS3Client(accessKeyID, secretAccessKeyID);
 			this.accessKeyID = accessKeyID;
+			this.secretAccessKeyID = secretAccessKeyID;
 			this.bucketName = bucketName;
 
 			if (this.tempPath != null)
@@ -44,23 +47,66 @@ namespace NHibernate.Lob.External
 				using (HashAlgorithm hash = HashAlgorithm.Create(hashName))
 					hashLength = hash.HashSize / 8;
 		}
-		
+
+		private HttpWebRequest Request(string verb, string path, string md5, string ifNot)
+		{
+			System.Collections.SortedList headers = new System.Collections.SortedList();
+			if (md5 != null) headers.Add("Content-MD5", md5);
+			if (ifNot != null) headers.Add("If-None-Match", "\"" + ifNot + "\"");
+			return Request(verb, path, headers);
+		}
+
+		private HttpWebRequest Request(string verb, string path, System.Collections.SortedList headers)
+		{
+			string keyForUrl, keyForEncryption;
+			string server = Helper.Host(bucketName);
+
+			keyForUrl = path;
+			keyForEncryption = bucketName + "/" + path;
+
+			string url = Helper.makeURL(server, keyForUrl, secure);
+			HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+			req.AllowWriteStreamBuffering = false;
+			req.Proxy.Credentials = CredentialCache.DefaultCredentials;
+			req.Method = verb;
+
+			Helper.addHeaders(req, headers);
+			Helper.addAuthHeader(req, keyForEncryption, accessKeyID, secretAccessKeyID);
+			return req;
+		}
+
+		public Stream OpenReader(string path)
+		{
+			return Request("GET", path, null, null)
+				.GetResponse()
+				.GetResponseStream();
+		}
+
 		public override Stream OpenReader(byte[] contentIdentifier)
 		{
-			var response = client.GetObject(new Amazon.S3.Model.GetObjectRequest()
-				.WithBucketName(bucketName)
-				.WithKey(GetPath(contentIdentifier))
-			);
-			return response.ResponseStream;
+			return OpenReader(GetPath(contentIdentifier)); 
+		}
+
+		public IEnumerable<S3Blob> List()
+		{
+			using (var stream = OpenReader(""))
+			using (var reader = XmlReader.Create(stream))
+				while (reader.Read())
+					if (reader.NodeType == XmlNodeType.Element && reader.LocalName == "Key")
+					{
+						var key = reader.ReadElementContentAsString();
+						yield return new S3Blob(this, key);
+					}
+		}
+
+		public void Delete(string path)
+		{
+			Request("DELETE", path, null, null).GetResponse().Close();
 		}
 
 		public override void Delete(byte[] contentIdentifier)
 		{
-			string path = GetPath(contentIdentifier);
-			Amazon.S3.Model.DeleteObjectRequest request = new Amazon.S3.Model.DeleteObjectRequest()
-				.WithBucketName(bucketName)
-				.WithKey(path);
-			client.DeleteObject(request);
+			Delete(GetPath(contentIdentifier));
 		}
 
 		public override bool Equals(IExternalBlobConnection connection)
@@ -86,56 +132,6 @@ namespace NHibernate.Lob.External
 			return new S3BlobWriter(this);
 		}
 
-		/*public byte[] Store(Stream stream)
-		{
-
-			try
-			{
-				byte[] hash = WriteFile(stream, output);
-
-
-				return hash;
-			}
-			catch
-			{
-
-				throw;
-			}
-		 
-			private byte[] WriteFile(Stream input, FileStream output)
-			{
-
-				int i, bufferSize = _bufferSize;
-				byte[] readBuffer = new byte[bufferSize], writeBuffer = new byte[bufferSize];
-
-				i = input.Read(readBuffer, 0, bufferSize);
-
-				if (i == 0) return new byte[hash.HashSize];
-
-				do
-				{
-					byte[] cryptBuffer = readBuffer;
-					readBuffer = writeBuffer;
-					writeBuffer = cryptBuffer;
-
-					cryptBuffer = (byte[])cryptBuffer.Clone(); // Necessary??
-					
-					IAsyncResult a = input.BeginRead(readBuffer, 0, bufferSize, null, null);
-					IAsyncResult aa = output.BeginWrite(writeBuffer, 0, i, null, null);
-
-					hash.TransformBlock(cryptBuffer, 0, i, cryptBuffer, 0);
-
-					output.EndWrite(aa);
-					i = input.EndRead(a);
-				}
-				while (i > 0);
-
-				hash.TransformFinalBlock(readBuffer, 0, 0); // ??
-
-				return hash.Hash;
-			}
-		}*/
-
 		public string GetPath(byte[] contentIdentifier)
 		{
 			if (contentIdentifier == null) throw new NullReferenceException("contentIdentifier cannot be null.");
@@ -149,8 +145,9 @@ namespace NHibernate.Lob.External
 			return sb.ToString();
 		}
 
-		private class S3BlobWriter : ExternalBlobWriter
+		public class S3BlobWriter : ExternalBlobWriter
 		{
+			private bool writtenTo;
 			private string tempFile;
 			private FileStream tempStream;
 			private HashAlgorithm hash;
@@ -159,7 +156,11 @@ namespace NHibernate.Lob.External
 			//private byte[] cryptBuffer;
 			private S3Connection connection;
 
-			public S3BlobWriter(S3Connection connection)
+			private S3Connection copyFromSourceConnection;
+			private string copyFromSourceObject;
+			private string copyFromSourceEtag;
+
+			internal S3BlobWriter(S3Connection connection)
 			{
 				if (connection == null) throw new ArgumentNullException("connection");
 				this.connection = connection;
@@ -168,11 +169,16 @@ namespace NHibernate.Lob.External
 				if (hash == null) throw new Exception("Missing hash algorithm: " + connection.hashName);
 	
 				checksum = new MD5CryptoServiceProvider();
+			}
 
+			public void EnsureTempFile()
+			{
+				if (writtenTo) return;
+				writtenTo = true;
 				if (connection.tempPath == null)
 				{
 					tempFile = Path.GetTempFileName();
-					tempStream = new FileStream(tempFile, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None);
+					tempStream = new FileStream(tempFile, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
 				}
 				else
 				{
@@ -191,9 +197,36 @@ namespace NHibernate.Lob.External
 				}
 			}
 
+			public void CopyFrom(S3Connection sourceConnection, string sourcePath)
+			{
+				ThrowIfClosed();
+				writtenTo = true;
+
+				var buffer = new byte[S3Connection.BUFFERSIZE];
+				var checkSumBuffer = new byte[S3Connection.BUFFERSIZE];
+				int readBytes;
+				var request = sourceConnection.Request("GET", sourcePath, null, null);
+				var response = request.GetResponse();
+				var etag = response.Headers[HttpResponseHeader.ETag];
+				using (var reader = response.GetResponseStream())
+				{
+					while ((readBytes = reader.Read(buffer, 0, S3Connection.BUFFERSIZE)) > 0)
+					{
+						checkSumBuffer = (byte[])buffer.Clone();
+						hash.TransformBlock(buffer, 0, readBytes, buffer, 0);
+						checksum.TransformBlock(checkSumBuffer, 0, readBytes, checkSumBuffer, 0);
+					}
+				}
+				
+				copyFromSourceConnection = sourceConnection;
+				copyFromSourceObject = sourcePath;
+				copyFromSourceEtag = etag;
+			}
+
 			public override void Write(byte[] buffer, int offset, int count)
 			{
 				ThrowIfClosed();
+				EnsureTempFile();
 				byte[] cryptBuffer = (byte[])buffer.Clone();
 				hash.TransformBlock(cryptBuffer, offset, count, cryptBuffer, 0);
 				cryptBuffer = (byte[])buffer.Clone();
@@ -204,6 +237,7 @@ namespace NHibernate.Lob.External
 			public override void WriteByte(byte value)
 			{
 				ThrowIfClosed();
+				EnsureTempFile();
 				byte[] cryptBuffer = new byte[] { value };
 				hash.TransformBlock(cryptBuffer, 0, 1, cryptBuffer, 0);
 				cryptBuffer = new byte[] { value };
@@ -214,6 +248,7 @@ namespace NHibernate.Lob.External
 			public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
 			{
 				ThrowIfClosed();
+				EnsureTempFile();
 				byte[] cryptBuffer = (byte[])buffer.Clone();
 				hash.TransformBlock(cryptBuffer, offset, count, cryptBuffer, 0);
 				cryptBuffer = (byte[])buffer.Clone();
@@ -224,38 +259,77 @@ namespace NHibernate.Lob.External
 			public override void EndWrite(IAsyncResult asyncResult)
 			{
 				ThrowIfClosed();
+				EnsureTempFile();
 				tempStream.EndWrite(asyncResult);
 			}
 
 			public override byte[] Commit()
 			{
 				ThrowIfClosed();
-				tempStream.Flush();
-				tempStream.Dispose();
 
-				byte[] emptyBytes = new byte[0];
-				hash.TransformFinalBlock(emptyBytes, 0, 0);
-				checksum.TransformFinalBlock(emptyBytes, 0, 0);
+				byte[] buffer = new byte[S3Connection.BUFFERSIZE];
+
+				hash.TransformFinalBlock(buffer, 0, 0);
+				checksum.TransformFinalBlock(buffer, 0, 0);
 
 				byte[] id = hash.Hash;
 
-				string digest = Convert.ToBase64String(checksum.Hash);
+				var digest = checksum.Hash;
 				string path = connection.GetPath(id);
 
-				Amazon.S3.Model.PutObjectRequest request = new Amazon.S3.Model.PutObjectRequest()
-					.WithBucketName(connection.bucketName)
-					.WithKey(path)
-					.WithMD5Digest(digest)
-					.WithFilePath(tempFile);
+				bool exists = true;
+				try
+				{
+					connection.Request("HEAD", path, null, ToHex(digest)).GetResponse().Close();
+					exists = false;
+				}
+				catch (WebException ex)
+				{
+					exists = ((HttpWebResponse)ex.Response).StatusCode == HttpStatusCode.NotModified;
+					ex.Response.Close();
+				}
 
-				connection.client.PutObject(request);
+				if (!exists)
+				{
+					HttpWebRequest request;
 
-				tempStream = null;
-				System.IO.File.Delete(tempFile);
-				tempFile = null;
+					if (tempStream != null)
+					{
+						request = connection.Request("PUT", path, Convert.ToBase64String(digest), null);
+						tempStream.Seek(0, SeekOrigin.Begin);
+						request.ContentLength = tempStream.Length;
+						int bytesRead;
+						using (var requestStream = request.GetRequestStream())
+							while ((bytesRead = tempStream.Read(buffer, 0, S3Connection.BUFFERSIZE)) != 0)
+								requestStream.Write(buffer, 0, bytesRead);
+					}
+					else if (copyFromSourceConnection != null)
+					{
+						System.Collections.SortedList headers = new System.Collections.SortedList();
+						headers.Add("x-amz-copy-source", "/" + copyFromSourceConnection.bucketName + "/" + copyFromSourceObject);
+						if (copyFromSourceEtag != null) headers.Add("x-amz-copy-source-if-match", copyFromSourceEtag);
+
+						request = connection.Request("PUT", path, headers);
+						request.ContentLength = 0;
+					}
+					else
+					{
+						request = connection.Request("PUT", path, Convert.ToBase64String(digest), null);
+						request.ContentLength = 0;
+					}
+					request.GetResponse().Close();
+				}
 
 				Dispose(true);
 				return id;
+			}
+
+			private static string ToHex(byte[] bytes)
+			{
+				var buffer = new System.Text.StringBuilder(bytes.Length * 2);
+				for (var i = 0; i < bytes.Length; i++)
+					buffer.Append(bytes[i].ToString("x2"));
+				return buffer.ToString();
 			}
 
 			protected override void Dispose(bool disposing)
@@ -269,10 +343,15 @@ namespace NHibernate.Lob.External
 						catch { }
 						tempFile = null;
 					}
+				copyFromSourceConnection = null;
+				copyFromSourceObject = null;
+				copyFromSourceEtag = null;
 				if (disposing)
 				{
 					if (hash != null) ((IDisposable)hash).Dispose();
+					if (checksum != null) ((IDisposable)checksum).Dispose();
 					hash = null;
+					checksum = null;
 					connection = null;
 					//cryptBuffer = null;
 				}
@@ -335,7 +414,7 @@ namespace NHibernate.Lob.External
 
 			private void ThrowIfClosed()
 			{
-				if (tempStream == null) throw new Exception("The writer is closed.");
+				if (writtenTo && tempStream == null && copyFromSourceConnection == null) throw new Exception("The writer is closed.");
 			}
 		}
 	}
